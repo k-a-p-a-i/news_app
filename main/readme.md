@@ -10,6 +10,6 @@
 
 > Если страница 404 не рендерится, то запуск сервера
 ```commandline
-python NewsStudyRTK/manage.py runserver --insecure
+python manage.py runserver --insecure
 ```
  
