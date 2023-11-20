@@ -1,0 +1,56 @@
+
+body {
+background-color: #E34234;
+min-height: 100vh;
+  position: relative;
+  margin: 0;
+  padding-bottom: 55px;
+  box-sizing: border-box;
+}
+
+footer {position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+
+
+  text-align: center;
+}
+
+
+.navbar .active
+{color: black !important;
+font-family:Georgia !important;
+font-size: 30px !important;
+border-bottom:2px solid #f00;
+}
+
+.navbar .navbar-brand
+{
+border-bottom:2px solid #f00;
+margin-left : 15px;
+padding: 21.5px;
+}
+
+
+
+
+.navbar .dropdown {
+font-size: 30px !important;
+color: green !important;
+}
+
+
+/* стиль для страницы аккаунта */
+.login_info{
+text-align: center;
+margin-top: 5%;
+}
+
+/* стиль для изображения на странице аккаунта */
+img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
