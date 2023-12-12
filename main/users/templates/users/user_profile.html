@@ -1,0 +1,78 @@
+{% extends  'news/base_generic.html' %}
+
+{% load static %}
+{% load bootstrap5 %}
+{% load crispy_forms_tags %}
+
+{% block title %} Личный кабинет {% endblock title %}
+
+
+
+{% block content %}
+
+<!--Окно данных пользователя-->
+<div class="container-fluid">
+    <div class="text-center" style="margin-top: 30px;">
+        <h2>Редактирование профиля {{ request.user.username }}</h2>
+        <br/>
+
+        <div class="d-flex justify-content-center">
+            <div class="card">
+                <h4 class="card-title font-weight-bold text-center mt-3 fst-italic">Добро пожаловать, {{ user.username }}</h4>
+                <hr />
+
+                <div class="d-flex flex-column align-items-center text-center">
+                    <img src="{{ request.user.account.account_image.url }}" alt="{{ request.user.username }}" class="rounded-circle" width="150" />
+                    {{ account_form.account_image }}
+                </div>
+                <br />
+                <div class="card-text">
+                    <p class="text-muted mb-0" style="font-size: 12px font-weight: 700">Логин:</p>
+                    <p>{{ user.username }}</p>
+                    <p class="text-muted mb-0" style="font-size: 12px font-weight: 700">Имя:</p>
+                    <p>{{ user.first_name }} {{ user.last_name }}</p>
+                    <p class="text-muted mb-0" style="font-size: 12px font-weight: 700 ">Электронная почта:</p>
+                    <p>{{ user.email }}</p>
+
+                    <!-- Button trigger modal -->
+                    <div class="text-center">
+                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#profileModal">Редактировать профиль</button>
+                    </div>
+                    <br />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<!--Всплывающее окно редактирования профиля-->
+<div class="modal fade" tabindex="-1" id="profileModal" aria-hidden="true" role="dialog">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Редактировать профиль</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %} {{ user_form|crispy }} {{ profile_form|crispy }}
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" value="Treter">Сохранить изменения</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+{% endblock %}

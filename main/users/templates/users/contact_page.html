@@ -1,0 +1,30 @@
+{% extends  'news/base_generic.html' %}
+
+{% load static %}
+{% load bootstrap5 %}
+{% load crispy_forms_tags %}
+
+{% block title %} Обратная связь {% endblock title %}
+
+
+
+{% block content %}
+
+    <div class="container-fluid">
+         <div class="text-center">
+             <h1>Страница обратной связи</h1>
+
+
+             <form method="post" class="contact_form">
+                {% csrf_token %}
+            {{ form|crispy }}
+                <input type="submit"  class="btn btn-success" value="Отправить">
+            </form>
+
+         </div>
+
+
+    </div>
+
+
+{% endblock %}

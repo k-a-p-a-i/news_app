@@ -1,0 +1,30 @@
+{% extends  'news/base_generic.html' %}
+{% load bootstrap5 %}
+{% load bootstrap_icons %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %} Добавление новости {% endblock title %}
+
+
+
+{% block content %}
+
+    <div class="container-fluid">
+         <div class="text-center">
+             <h1>Добавление новости</h1>
+
+
+             <form method="post" class="contact_form" enctype="multipart/form-data">
+                {% csrf_token %}
+            {{ form|crispy }}
+                <input type="submit" class="btn btn-success" value="Добавить новость">
+            </form>
+
+         </div>
+
+
+    </div>
+
+{% endblock %}
+

@@ -1,0 +1,46 @@
+{% extends "news/base_generic.html" %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'news/css/styles.css'  %}">
+
+{% block title %}
+  Страница поиска
+{% endblock %}
+
+{% block content %}
+<!--поле поиска-->
+<div class="container-fluid text-center" style="border:2px solid #cecece; background-color: #FAEBD7!important">
+    <form class="my-2 my-lg-0" role="search" action="{% url 'news_app:search_news' %}" method="get">
+        <input class="form-control me-2 mt-3" type="search" placeholder="Найти" aria-label="Search" name="search">
+        <button class="btn btn-outline-secondary text-black btn-lg mt-2 mb-2" type="submit">Найти</button>
+    </form>
+</div>
+
+<!--поле с количеством найденных записей-->
+<div class="search_result m-3">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <br>
+                <p class="lead">Найдено записей: {{ posts.count }} </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--поле с найденныими новостями-->
+<div class="container-fluid">
+    {% for article in posts %}
+    <div class="single_news m-3">
+        <div class="p-2 p-md-15 text-white rounded bg-dark">
+            <div class="col-md-6 px-5">
+                <h1 class="display-4 fst-italic"> {{ article.title }}</h1>
+                <p class="lead my-3">Автор: {{ article.author }}</p>
+                <p class="lead my-3">Дата создания: {{ article.date }}</p>
+                <p class="lead mb-0"><a href="{{ article.get_absolute_url }}" class="text-white fw-bold"> Читать полностью...</a></p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}
