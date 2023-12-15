@@ -6,6 +6,9 @@ from django.contrib.auth.models import User
 
 from .models import Account
 
+
+from django.forms.widgets import NumberInput
+
 class ContactForm(forms.Form):
 	#форма обратной связи
 
@@ -44,13 +47,12 @@ class UserForm(UserCreationForm):
 
 class ProfileForm(forms.ModelForm):
 	#форма обновления данных профиля
+
 	class Meta:
 		model = Account
 		fields = ('birthdate', 'gender', 'account_image')
 		widgets = {
-			'birthdate': forms.DateInput(
-				attrs={'type': 'date', 'placeholder': 'yyyy-mm-dd (DOB)', 'class': 'form-control'}
-			)
+					'birthdate': NumberInput(attrs={'type': 'date'})
 		}
 
 class UserUpdateForm(UserChangeForm):

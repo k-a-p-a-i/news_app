@@ -12,10 +12,14 @@ class Account(models.Model):
         ('Н/Д', 'не указано')
             )
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, verbose_name='Пользователь')
-    #nickname = models.CharField(max_length=50, verbose_name="Никнэйм")
-    birthdate = models.DateField(null= True, verbose_name="Дата рождения")
+    birthdate = models.DateField( verbose_name="Дата рождения")
     gender = models.CharField(choices=gender_choices, max_length=20, verbose_name="Пол")
-    account_image = models.ImageField(default='account_images/default_account.png', upload_to='account_images', verbose_name="Изображение профиля")
+
+    def folder_path(instance, filename):
+        return f"account_images/{instance.user.username}/{filename}"
+
+
+    account_image = models.ImageField(default='account_images/default_account.png', upload_to=folder_path, verbose_name="Изображение профиля")
 
 
     def __str__(self):

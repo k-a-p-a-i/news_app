@@ -1,19 +1,78 @@
 {% extends  'news/base_generic.html' %}
+
 {% load bootstrap5 %}
 {% load bootstrap_icons %}
 {% load static %}
-
-
-{% block title %} Новости {% endblock title %}
-
-
-
+{% load widget_tweaks %}
 
 
 {% block content %}
 
-<div class="login_info">
-        <h1>Новостей пока нет</h1>
+<div class="col-md-3 ml-2">
+   <h1>Статьи</h1>
 </div>
 
-{% endblock content %}
+<!-- Фильтры для поиска  -->
+<div class="container-fluid">
+    <div class="col-md-3">
+        <!-- Code for Filter form start-->
+        <div class="container">
+            <a class="text-dark text-sm mb-1" href="{% url 'news_app:news_list' %}">x Очистить фильтры</a>
+            <form method="get">
+                <div style="display: grid;">
+                    {% for field in filter.form %}
+                    <div id="form-field-{{ forloop.counter0 }}">
+                        <!-- widget_tweaks -->
+                        {{ field.label_tag }} {% render_field field class="form-control" %}
+                    </div>
+                    {% endfor %}
+                </div>
+                <button type="submit" class="btn btn-primary mb-3 mt-2">Найти</button>
+            </form>
+        </div>
+        <br />
+    </div>
+</div>
+
+<!-- Таблица со списком новостей -->
+<div class="container-fluid">
+    <div class="col-md-12">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Название новости</th>
+                    <th scope="col">Автор</th>
+                    <th scope="col">Дата</th>
+                    <th scope="col">Тэги</th>
+                    <th scope="col">Категории</th>
+                    <th scope="col">Читать полностью...</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for article in filter.qs %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ article.title }}</td>
+                    <td>{{ article.author }}</td>
+                    <td>{{ article.date }}</td>
+                    <td>{{ article.tag_list }}</td>
+                    <td>{{ article.category }}</td>
+                    <td><a href="{{ article.get_absolute_url }}">Читать полностью...</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+{% endblock content%}
+
+
+
+
+
+
+
+

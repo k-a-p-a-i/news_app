@@ -1,132 +1,117 @@
 from django.db import models
-from django.urls import reverse
-from django.conf import settings  # Required to assign User as a borrower
-import uuid
-from datetime import date
+from django.contrib.auth.models import User
+from django.utils.safestring import mark_safe
+import shutil
+import os
 
 
 
-class Genre(models.Model):
-    """Model representing a book genre."""
-    name = models.CharField(
-        max_length=200,
-        unique=True,
-        help_text="Enter a book genre (e.g. Science Fiction, French Poetry etc.)"
-    )
+from django.conf import settings
 
-    def __str__(self):
-        """String for representing the Model object."""
-        return self.name
+base_dir = settings.MEDIA_ROOT
 
-    def get_absolute_url(self):
-        """Returns the url to access a particular genre instance."""
-        return reverse('genre-detail', args=[str(self.id)])
+import datetime
+class PublishedToday(models.Manager):
+    def get_queryset(self):
+        return super(PublishedToday,self).get_queryset().filter(date__gte=datetime.date.today())
 
-class Book(models.Model):
-    """Model representing a book (but not a specific copy of a book)."""
-    title = models.CharField(max_length=200)
-    author = models.ForeignKey('Author', on_delete=models.RESTRICT, null=True)
-    # Foreign Key used because book can only have one author, but authors can have multiple books.
-    # Author as a string rather than object because it hasn't been declared yet in file.
-
-    summary = models.TextField(
-        max_length=1000, help_text="Enter a brief description of the book")
-    isbn = models.CharField('ISBN', max_length=13,
-                            unique=True,
-                            help_text='13 Character <a href="https://www.isbn-international.org/content/what-isbn'
-                                      '">ISBN number</a>')
-
-    # ManyToManyField used because genre can contain many books. Books can cover many genres.
-    # Genre class has already been defined, so we can specify the object above.
-    genre = models.ManyToManyField(
-        Genre, help_text="Select a genre for this book")
-    language = models.ForeignKey(
-        'Language', on_delete=models.SET_NULL, null=True)
-
-    class Meta:
-        ordering = ['title', 'author']
-
-    def display_genre(self):
-        """Creates a string for the Genre. This is required to display genre in Admin."""
-        return ', '.join([genre.name for genre in self.genre.all()[:3]])
-
-    display_genre.short_description = 'Genre'
+class Tag(models.Model):
+    title = models.CharField(max_length=15)
+    status = models.BooleanField(default=True)
 
     def __str__(self):
-        """String for representing the Model object."""
         return self.title
 
-    def get_absolute_url(self):
-        """Returns the URL to access a detail record for this book."""
-        return reverse('book-detail', args=[str(self.id)])
-
-class BookInstance(models.Model):
-
-    """Model representing a specific copy of a book (i.e. that can be borrowed from the library)."""
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4,
-                          help_text="Unique ID for this particular book across whole library")
-    book = models.ForeignKey('Book', on_delete=models.RESTRICT, null=True)
-    imprint = models.CharField(max_length=200)
-    due_back = models.DateField(null=True, blank=True)
-    borrower = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
-
-    @property
-    def is_overdue(self):
-        """Determines if the book is overdue based on due date and current date."""
-        return bool(self.due_back and date.today() > self.due_back)
-
-    LOAN_STATUS = (
-        ('m', 'Maintenance'),
-        ('o', 'On loan'),
-        ('a', 'Available'),
-        ('r', 'Reserved'),
-    )
-
-    status = models.CharField(
-        max_length=1,
-        choices=LOAN_STATUS,
-        blank=True,
-        default='m',
-        help_text='Book availability',
-    )
+    def tag_count(self):
+        count = self.article_set.count()
+        return count
 
     class Meta:
-        ordering = ['due_back']
+        ordering = ['title', 'status']
+        verbose_name = "Тэг"
+        verbose_name_plural = "Тэги"
+
+
+
+class Article(models.Model):
+
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name='Автор' )
+    title = models.CharField('Название', max_length=50, default='')
+    anouncement = models.TextField('Аннотация', max_length=250)
+    text = models.TextField('Текст новости')
+    date = models.DateTimeField('Дата публикации', auto_now=True) #default=timezone.now
+    category = models.ForeignKey('Category', on_delete=models.SET_NULL, null=True, verbose_name='Категория')
+    tags = models.ManyToManyField(to = Tag, blank=True, verbose_name='Тэги')
+    objects = models.Manager()
+    published = PublishedToday()
+
+    #date_created = models.DateTimeField(auto_now_add=True)
+    #date_updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        """String for representing the Model object."""
-        return f'{self.id} ({self.book.title})'
+        return f'Новость: {self.title} от {str(self.date)[:19]}'
+    def get_absolute_url(self):
+        return f'/news/{int(self.id)}'
+    def tag_list(self):
+        s = ''
+        for tag in self.tags.all():
+            s += '*'+tag.title +' '
+        return s
 
-class Author(models.Model):
-    """Model representing an author."""
-    first_name = models.CharField(max_length=100, verbose_name="Имя")
-    last_name = models.CharField(max_length=100, verbose_name="Фамилия")
-    date_of_birth = models.DateField(null=True, blank=True, verbose_name="Дата рождения")
-    date_of_death = models.DateField(null=True, blank=True, verbose_name="Дата смерти")
+    def image_tag(self):
+        image = ShowImage.objects.filter(article = self)
+        if image:
+            return mark_safe(f"<img src='{image[0].image.url}' height='50px' width='auto'/>")
+        else:
+            return 'No Image'
+
+
+    def delete(self, *args, **kwargs):
+        """для автоматического удаления папки с изображениями статьи"""
+        dir_path = f"article_images/article_{self.pk}"
+        ar_dir = os.path.join(base_dir, dir_path)
+        if os.path.exists(ar_dir):
+            shutil.rmtree(ar_dir)
+
+        super(Article, self).delete(*args, **kwargs)
 
     class Meta:
-        ordering = ['last_name', 'first_name']
-        #verbose_name = 'Автор'
+        verbose_name = "Новость"
+        verbose_name_plural = "Новости"
+        ordering = ['title','date']
 
-    def get_absolute_url(self):
-        """Returns the URL to access a particular author instance."""
-        return reverse('author-detail', args=[str(self.id)])
 
-    def __str__(self):
-        """String for representing the Model object."""
-        return f'{self.first_name} {self.last_name}'
 
-class Language(models.Model):
-    """Model representing a Language (e.g. English, French, Japanese, etc.)"""
-    name = models.CharField(max_length=200,
+class Category(models.Model):
+    name = models.CharField('Категория', max_length=200,
                             unique=True,
-                            help_text="Enter the book's natural language (e.g. English, French, Japanese etc.)")
-
-    def get_absolute_url(self):
-        """Returns the url to access a particular language instance."""
-        return reverse('language-detail', args=[str(self.id)])
+                            help_text="Введите категорию новости")
 
     def __str__(self):
-        """String for representing the Model object (in Admin site etc.)"""
         return self.name
+    class Meta:
+        verbose_name = "Категория"
+        verbose_name_plural = "Категории"
+
+
+
+class ShowImage(models.Model):
+    article = models.ForeignKey(Article, on_delete=models.CASCADE)
+    title = models.CharField(max_length=150, blank=True)
+
+    def folder_path(instance, filename):
+        return f"article_images/article_{instance.article.pk}/{filename}"
+
+    image = models.ImageField(upload_to=folder_path)
+
+    def __str__(self):
+        return self.title
+    def image_tag(self):
+        if self.image is not None:
+            return mark_safe(f"<img src='{self.image.url}' height='50px' width='auto'/>")
+        else:
+            return 'No Image'
+
+
+
+

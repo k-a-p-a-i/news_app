@@ -11,6 +11,8 @@ from .models import Account
 from .forms import ContactForm, ProfileForm, UserForm, UserUpdateForm
 
 
+
+
 def user_index(request):
     try:
         user_acc =Account.objects.get(user = request.user)

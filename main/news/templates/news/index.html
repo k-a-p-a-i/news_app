@@ -13,11 +13,37 @@
 
 {% block content %}
 
-<div class="login_info">
-        <h1>Информация дополняется</h1>
-</div>
+{%if posts.first == None %}
+    <div class="col  d-flex align-items-center justify-content-center">
+      <h1>На данный момент нет новостей</h1>
+    </div>
+ {% endif%}
+
+<div class="container-fluid">
 
 
+
+
+
+        {% for article in posts %}
+            <div class="single_news m-3">
+              <div class="p-2 p-md-15 text-white rounded bg-dark" >
+                <div class="col-md-6 px-5">
+                      <h1 class="display-4 fst-italic"> {{ article.title }}</h1>
+
+                      <p class="lead my-3">Автор: {{ article.author }}</p>
+                      <p class="lead my-3">Дата создания: {{ article.date }}</p>
+
+                      <p class="lead mb-0"><a href="{{ article.get_absolute_url }}" class="text-white fw-bold"> Читать полностью...</a></p>
+
+                </div>
+              </div>
+            </div>
+
+        {% endfor %}
+
+
+ </div>
 
 
 

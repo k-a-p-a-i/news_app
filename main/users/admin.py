@@ -14,7 +14,15 @@ class UserProfileInline(admin.StackedInline):
     can_delete = False
 
 class UserAdmin(UserAdmin):
-    inlines = [UserProfileInline]
+    #inlines = [UserProfileInline]
+    def add_view(self, *args, **kwargs):
+        self.inlines = []
+        return super(UserAdmin, self).add_view(*args, **kwargs)
+
+    def change_view(self, *args, **kwargs):
+        self.inlines = [UserProfileInline]
+        return super(UserAdmin, self).change_view(*args, **kwargs)
+
 
 
 # unregister old user admin

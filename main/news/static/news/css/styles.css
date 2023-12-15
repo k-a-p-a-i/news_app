@@ -1,12 +1,21 @@
 
 body {
-background-color: #E34234;
+background-color: #ffffff14;
 min-height: 100vh;
   position: relative;
   margin: 0;
   padding-bottom: 55px;
   box-sizing: border-box;
 }
+
+
+
+.contact_form {
+float: left;
+margin: 40px 30%;
+width: 40%;
+}
+
 
 footer {position: fixed;
   left: 0;
@@ -22,8 +31,10 @@ footer {position: fixed;
 {color: black !important;
 font-family:Georgia !important;
 font-size: 30px !important;
-border-bottom:2px solid #f00;
+
 }
+
+
 
 .navbar .navbar-brand
 {
@@ -33,9 +44,7 @@ padding: 21.5px;
 }
 
 
-
-
-.navbar .dropdown {
+.navbar .my_bar {
 font-size: 30px !important;
 color: green !important;
 }
@@ -54,3 +63,13 @@ img {
   margin-right: auto;
   width: 50%;
 }
+
+/* Черный текст для ошибки валидации */
+.invalid-feedback {
+    color: black;
+}
+
+.carousel-inner > .carousel-item > img {
+   width:640px;
+   height:460px;
+ }

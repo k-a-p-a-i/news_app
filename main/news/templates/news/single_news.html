@@ -46,7 +46,7 @@
                               <div class="carousel-inner" role="listbox">
                                   {% for image in article.showimage_set.all %}
                                     <div class="carousel-item {%if forloop.counter == 1%}active{% endif%}">
-                                      <img class="d-block w-100" src="{{image.image.url}}" alt="First slide">
+                                      <img class="d-block" style="width: 100%; height: 100%;" src="{{image.image.url}}" alt="First slide">
                                     </div>
                                   {% endfor %}
                                 </div>
