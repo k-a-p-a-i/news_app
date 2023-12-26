@@ -1,0 +1,75 @@
+{% extends  'news/base_generic.html' %}
+{% load bootstrap5 %}
+{% load bootstrap_icons %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %} Добавление тэгов {% endblock title %}
+
+
+
+{% block content %}
+
+<div class="flex-container mt-3" style="width: 100%; height: 100%;  display: flex; flex-flow: row nowrap;">
+
+    <div class="tags" style=" width: 15%; height: 100%;">
+        <div class="col text-center">
+            <h6>Список тэгов:</h6>
+            {% for tag_name in tags %}
+            <ul class="list-group">
+                    <li class="list-group-item list-group-item-success">
+                        {{ tag_name }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+
+    <div class="first" style=" width: 70%;">
+    <div class="container-fluid">
+         <div class="text-center">
+             <h1>Добавление нового тэга</h1>
+             <form method="post" class="contact_form" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ tag_form|crispy }}
+                 <input type="submit" class="btn btn-success" value="Сохранить">
+            </form>
+         </div>
+    </div>
+
+
+    <div class="container-fluid">
+         <div class="text-center">
+             <h1>Добавление новой категории</h1>
+             <form method="post" class="contact_form" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ category_form|crispy }}
+                <input type="submit" class="btn btn-success" value="Сохранить">
+            </form>
+         </div>
+    </div>
+
+    </div>
+
+
+    <div class="categories" style=" width: 15%; height: 85vh;">
+        <div class="col text-center">
+            <h6>Список категорий:</h6>
+            {% for cat_name in category %}
+             <ul class="list-group">
+
+                <li class="list-group-item list-group-item-success">{{ cat_name }}</li>
+            {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+
+
+{% endblock %}
+

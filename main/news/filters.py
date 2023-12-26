@@ -2,6 +2,12 @@ import django_filters
 from django import forms
 from .models import Article, Tag, Category
 from django.contrib.auth.models import User
+
+
+
+
+
+
 class ArticleFilter(django_filters.FilterSet):
 
     tags = django_filters.ModelChoiceFilter(
@@ -35,5 +41,7 @@ class ArticleFilter(django_filters.FilterSet):
     class Meta:
         model = Article
         fields = ['author', 'text_info', 'start_date', 'tags', 'category']
+
+        #fields = {"name": ["exact", "contains"], "country": ["exact"]}  можно таким образом указывать как искать
 
 

@@ -36,6 +36,9 @@ INSTALLED_APPS = [
     'main',
     'news',
     'users',
+'webstack_django_sorting',
+    'django_tables2',
+
 #    'django_cleanup.apps.CleanupConfig' #обязательно добавлять в самом конце (автоматическое удаление картинок при удалении новости)
 ]
 

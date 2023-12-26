@@ -1,8 +1,10 @@
 from django import forms
+from django.contrib.auth import update_session_auth_hash
 from django.core.validators import MinLengthValidator
 
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordChangeForm
 from django.contrib.auth.models import User
+from django.http import JsonResponse
 
 from .models import Account
 
@@ -12,8 +14,8 @@ from django.forms.widgets import NumberInput
 class ContactForm(forms.Form):
 	#форма обратной связи
 
-    name = forms.CharField(max_length=40,label='Имя пользователя', validators= [MinLengthValidator(2)])
-    email = forms.EmailField(label='Email')
+    name = forms.CharField(max_length=40,label='Имя пользователя', validators= [MinLengthValidator(2)], disabled=True)
+    email = forms.EmailField(label='Email', disabled=True)
     message = forms.CharField(max_length=100, label='Введите сообщение',
                               widget=forms.Textarea)
 
@@ -61,5 +63,3 @@ class UserUpdateForm(UserChangeForm):
 	class Meta:
 		model = User
 		fields = ('username', 'email', 'first_name', 'last_name', )
-
-

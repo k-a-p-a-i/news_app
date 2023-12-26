@@ -3,6 +3,9 @@
 
 <link rel="stylesheet" href="{% static 'news/css/styles.css'  %}">
 
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+
 
 {% block title %}
   Главная страница
@@ -13,37 +16,90 @@
 
 {% block content %}
 
-{%if posts.first == None %}
-    <div class="col  d-flex align-items-center justify-content-center">
-      <h1>На данный момент нет новостей</h1>
-    </div>
- {% endif%}
+
+
+{%if articles.first == None %}
+<div class="col d-flex align-items-center justify-content-center">
+    <h1>На данный момент нет новостей</h1>
+</div>
+
+{% else %}
+<!--ниже пагинатор -->
 
 <div class="container-fluid">
 
+    {% for article in posts %}
+    <div class="single_news m-3">
+        <div class="p-2 p-md-15 text-white rounded bg-dark">
+            <div class="col-md-6 px-5">
+                <h1 class="display-4 fst-italic">{{ article.title }}</h1>
+
+                <p class="lead my-3">Автор: {{ article.author }}</p>
+                <p class="lead my-3">Дата создания: {{ article.date }}</p>
+                <p><small>Просмотры: {{article.get_views}} </small></p>
 
 
+                <div>{% if request.user.is_authenticated %}
 
-
-        {% for article in posts %}
-            <div class="single_news m-3">
-              <div class="p-2 p-md-15 text-white rounded bg-dark" >
-                <div class="col-md-6 px-5">
-                      <h1 class="display-4 fst-italic"> {{ article.title }}</h1>
-
-                      <p class="lead my-3">Автор: {{ article.author }}</p>
-                      <p class="lead my-3">Дата создания: {{ article.date }}</p>
-
-                      <p class="lead mb-0"><a href="{{ article.get_absolute_url }}" class="text-white fw-bold"> Читать полностью...</a></p>
-
+                    {% if article.pk in bookmarks %}
+                        <a class="btn btn-warning"  href="{% url 'users_app:favorites' article.pk %}"><i class="fa fa-bookmark">Удалить из избранного</i></a>
+                    {% else %}
+                        <a class="btn btn-success" href="{% url 'users_app:favorites' article.pk %}"><i class="fa fa-bookmark">В избранное</i></a>
+                    {% endif %}
+                {% endif %}
                 </div>
-              </div>
+
+                <p class="lead my-3"><a href="{{ article.get_absolute_url }}" class="text-white fw-bold">Читать полностью...</a></p>
             </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
 
-        {% endfor %}
+<div class="container-fluid" style="position: absolute;  bottom: 2%;">
+<nav aria-label="Page navigation example">
+
+    <ul class="pagination pagination-lg m-3 justify-content-center" >
+            {% if posts.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ posts.previous_page_number }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+                {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {% endif %}
+
+            {% for page in posts.paginator.page_range %}
+                {% if posts.number == page %}
+                <li class="page-item active "><p class="page-link" style="color: black;">{{ page }}</p></li>
+                {% else %}
+                <li class="page-item"><a class="page-link" href="?page={{ page }}"> {{ page }}</a></li>
+                {% endif %}
+            {% endfor %}
+                {% if posts.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ posts.next_page_number }}"aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                    {% else %}
+                    <li class="page-item disabled"><a class="page-link" href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                {% endif %}
+        </ul>
+
+</nav>
+</div>
 
 
- </div>
+{% endif%}
 
 
 

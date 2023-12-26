@@ -43,10 +43,11 @@
                             <!-- Карусель -->
                             {% if article.showimage_set.all %}
                            <div id="carouselExampleControls" class="carousel slide" data-ride="carousel" data-interval="false">
-                              <div class="carousel-inner" role="listbox">
+                              <div class="carousel-inner" role="listbox" style="width: auto%; height: 480px; !important;">
+
                                   {% for image in article.showimage_set.all %}
                                     <div class="carousel-item {%if forloop.counter == 1%}active{% endif%}">
-                                      <img class="d-block" style="width: 100%; height: 100%;" src="{{image.image.url}}" alt="First slide">
+                                      <img class="d-block" style="width: 100%; height: 100%; border-radius:5px;" src="{{image.image.url}}" alt="First slide">
                                     </div>
                                   {% endfor %}
                                 </div>
@@ -65,14 +66,35 @@
                             <br> <br>
 
 
-                          <p class="lead mb-0">{{ article.text }}</p>
-                            <br><br>
-                            <p> Автор: {{ article.author }}</p>
-                            <p class="lead my-3">Теги: {% for t in article.tags.all %} {{ t.title }} {% endfor %}</p>
+                          <p class="lead mt-2">Новость: <p style="font-family: Serif; font-size: 20px; "> {{ article.text }} </p> </p>
+                          <p class="lead mt-2">Автор: {{ article.author }}</p>
+                          <p class="lead mt-2">Теги: {% for t in article.tags.all %} {{ t.title }} {% endfor %}</p>
                         </div>
                 <br> <br>
-                <a class="btn btn-warning" href="{% url 'news_app:delete_news' article.pk%}">Удалить</a>
-                <a class="btn btn-primary" href="{% url 'news_app:update_news' article.pk%}">Редактировать</a>
+
+                {% if request.user.is_authenticated %}
+                    {% if request.user.id == article.author.id  or request.user.is_staff %}
+                        <a class="btn btn-danger" href="{% url 'news_app:delete_news' article.pk%}">Удалить новость</a>
+                        <a class="btn btn-primary" href="{% url 'news_app:update_news' article.pk%}">Редактировать</a>
+                            {% if request.user.is_staff %}
+                                {% if bookmark %}
+                                    <a class="btn btn-warning" href="{% url 'users_app:favorites' article.pk %}"><i class="fa fa-bookmark">Удалить из избранного</i></a>
+                                {% else %}
+                                    <a class="btn btn-success" href="{% url 'users_app:favorites' article.pk %}"><i class="fa fa-bookmark">В избранное</i></a>
+                                {% endif %}
+
+                            {% endif %}
+
+                    {% else %}
+                        <a class="btn btn-secondary disabled">Удалить</a>
+                        <a class="btn btn-secondary disabled">Редактировать</a>
+                        {% if bookmark %}
+                                <a class="btn btn-warning" href="{% url 'users_app:favorites' article.pk %}"><i class="fa fa-bookmark">Удалить из избранного</i></a>
+                            {% else %}
+                                <a class="btn btn-success" href="{% url 'users_app:favorites' article.pk %}"><i class="fa fa-bookmark">В избранное</i></a>
+                             {% endif %}
+                   {% endif %}
+                {% endif %}
                 </div>
             </div>
         </div>

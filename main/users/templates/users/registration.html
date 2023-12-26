@@ -15,7 +15,22 @@
         <form method="POST">
 		{% csrf_token %}
 		{{ form|crispy }}
-		<button class="btn btn-primary" type="submit">Зарегистирироваться</button>
+        <div class="form-check">
+            <h5>Тип аккаунта: </h5>
+            <div>
+                <input class="form-check-input" type="radio" id="author" name="account_type" value="author"/>
+                <label class="form-check-label" for="author">Автор</label>
+            </div>
+            <div>
+                <input class="form-check-input" type="radio" id="reader" name="account_type" value="reader"/>
+                <label class="form-check-label" for="reader">Читатель</label>
+            </div>
+
+
+
+        </div>
+
+		<button class="btn btn-primary mt-2" type="submit">Зарегистирироваться</button>
 	    </form>
 
         <p class="text-center">Если у вас уже есть аккаунт,  <a href="{% url 'users_app:login' %}">войдите</a> в учётную запись.</p>

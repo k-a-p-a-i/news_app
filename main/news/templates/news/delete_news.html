@@ -14,7 +14,6 @@
          <div class="text-center">
              <h1>Удаление новости {{article.title}}</h1>
 
-
              <form method="post" class="contact_form">
                 {% csrf_token %}
                  <a class="btn btn-warnings" href="{% url 'news_app:news_list'%}">Отмена</a>

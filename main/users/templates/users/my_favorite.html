@@ -1,0 +1,62 @@
+{% extends  'news/base_generic.html' %}
+
+{% load bootstrap5 %}
+{% load bootstrap_icons %}
+{% load static %}
+{% load widget_tweaks %}
+{% load sorting_tags %}
+{% load render_table from django_tables2 %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+
+
+{% block title %} Избранное {{ article.id }} {% endblock title %}
+
+{% block content %}
+
+
+<!-- Фильтры для поиска  -->
+<div class="container-fluid">
+    <div class="col-md-3">
+        <div class="container">
+            <a class="text-dark text-sm mb-1" href="{% url 'users_app:bookmarks' %}">x Очистить фильтры</a>
+            <form action="" method="get">
+                <div style="display: grid;">
+                    <!-- widget_tweaks -->
+                     {% for field in filter.form %}
+                     <div id="form-field-{{ forloop.counter0 }}">
+
+                        {% if field.label != "Авторы" %}
+
+                        {{ field.label_tag }} {% render_field field class="form-control" %}
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                <button type="submit" class="btn btn-primary mb-3 mt-2">Найти</button>
+            </form>
+        </div>
+        <br />
+    </div>
+</div>
+
+
+
+
+{% if table.rows|length == 0  %}
+    <div class="container-fluid">
+        <div class="text-center" style="margin-top: 10%;">
+            <h1>У вас еще нет избранных новостей</h1>
+             <h3><a href="{% url 'news_app:index' %}">Перейти</a> к просмотру новостей</h3>
+        </div>
+    </div>
+{% else %}
+    {% render_table table %}
+{% endif %}
+
+
+
+
+
+{% endblock  %}

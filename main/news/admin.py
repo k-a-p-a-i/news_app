@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.db.models.functions import Length
 from django.db.models import Count
 
-from .models import Article, Category, Tag, ShowImage
+from .models import Article, Category, Tag, ShowImage, ViewCounter
 
 
 
@@ -77,6 +77,12 @@ class TagAdmin(admin.ModelAdmin):
 @admin.register(ShowImage)
 class ShowImageAdmin(admin.ModelAdmin):
     list_display = ['title', 'article', 'image_tag']
+
+@admin.register(ViewCounter)
+class ViewCounterAdmin(admin.ModelAdmin):
+    list_display = ['article', 'ip_address', 'view_date']
+
+
 
 admin.site.register(Category)
 admin.site.register(Article, ArticeAdmin)

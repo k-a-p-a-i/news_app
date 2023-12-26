@@ -10,5 +10,10 @@ urlpatterns = [
     path('user_account/', views.user_account, name='user_account'), #профиль аккаунта
     path("login/", views.login_request, name="login"),  #страница входа в аккаунт
     path("logout/", views.logout_request, name= "logout"), #страница выхода из аккаунта
-    path('password-change/', views.ChangePasswordView.as_view(), name='password_change'),
+    path('change_password/', views.change_password, name='change_password'),
+    path('favorites/<int:id>', views.add_to_favorites, name='favorites'), #добавление в закладки
+    path('profile_delete/', views.profile_delete, name='profile_delete'), #удаление аккаунта
+    path("bookmarks/", views.FavoriteArticleListView.as_view(), name= "bookmarks"), #список новостей автора
+
+
 ]

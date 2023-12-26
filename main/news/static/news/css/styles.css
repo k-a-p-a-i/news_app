@@ -1,11 +1,12 @@
 
 body {
 background-color: #ffffff14;
-min-height: 100vh;
+
   position: relative;
   margin: 0;
   padding-bottom: 55px;
   box-sizing: border-box;
+
 }
 
 
@@ -17,12 +18,10 @@ width: 40%;
 }
 
 
-footer {position: fixed;
+footer {position: absolute;
   left: 0;
   bottom: 0;
   width: 100%;
-
-
   text-align: center;
 }
 
@@ -73,3 +72,6 @@ img {
    width:640px;
    height:460px;
  }
+
+
+

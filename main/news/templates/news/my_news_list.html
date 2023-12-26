@@ -11,15 +11,14 @@
 
 
 
+{% block title %} Мои статьи {{ article.id }} {% endblock title %}
 
 {% block content %}
 
 
 
-
-
 <div class="col-md-3 ml-2">
-   <h1>Статьи</h1>
+   <h1>Мои статьи</h1>
 </div>
 
 
@@ -31,11 +30,14 @@
             <a class="text-dark text-sm mb-1" href="{% url 'news_app:news_list' %}">x Очистить фильтры</a>
             <form action="" method="get">
                 <div style="display: grid;">
+                    <!-- widget_tweaks -->
                      {% for field in filter.form %}
-                    <div id="form-field-{{ forloop.counter0 }}">
-                        <!-- widget_tweaks -->
-                        {{ field.label_tag }} {% render_field field class="form-control" %}
+                     <div id="form-field-{{ forloop.counter0 }}">
 
+                        {% if field.label != "Авторы" %}
+
+                        {{ field.label_tag }} {% render_field field class="form-control" %}
+                        {% endif %}
                     </div>
                     {% endfor %}
                 </div>

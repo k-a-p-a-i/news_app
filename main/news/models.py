@@ -16,8 +16,8 @@ class PublishedToday(models.Manager):
         return super(PublishedToday,self).get_queryset().filter(date__gte=datetime.date.today())
 
 class Tag(models.Model):
-    title = models.CharField(max_length=15)
-    status = models.BooleanField(default=True)
+    title = models.CharField(max_length=15, verbose_name='Название')
+    status = models.BooleanField(default=True, verbose_name='Статус')
 
     def __str__(self):
         return self.title
@@ -35,13 +35,15 @@ class Tag(models.Model):
 
 class Article(models.Model):
 
-    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name='Автор' )
+    author = models.ForeignKey(User, on_delete=models.CASCADE, null=True, verbose_name='Автор')
     title = models.CharField('Название', max_length=50, default='')
     anouncement = models.TextField('Аннотация', max_length=250)
     text = models.TextField('Текст новости')
     date = models.DateTimeField('Дата публикации', auto_now=True) #default=timezone.now
     category = models.ForeignKey('Category', on_delete=models.SET_NULL, null=True, verbose_name='Категория')
     tags = models.ManyToManyField(to = Tag, blank=True, verbose_name='Тэги')
+
+
     objects = models.Manager()
     published = PublishedToday()
 
@@ -75,6 +77,9 @@ class Article(models.Model):
 
         super(Article, self).delete(*args, **kwargs)
 
+    def get_views(self):
+        return self.views.count() #views - это related_name из связанной модели ViewCounter
+
     class Meta:
         verbose_name = "Новость"
         verbose_name_plural = "Новости"
@@ -85,7 +90,7 @@ class Article(models.Model):
 class Category(models.Model):
     name = models.CharField('Категория', max_length=200,
                             unique=True,
-                            help_text="Введите категорию новости")
+                            )
 
     def __str__(self):
         return self.name
@@ -112,6 +117,15 @@ class ShowImage(models.Model):
         else:
             return 'No Image'
 
+##-----------------------Счетчик просмотров_________________________#######################
+class ViewCounter(models.Model):
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='views', verbose_name='Счетчик просмотров')
+    ip_address = models.GenericIPAddressField()
+    view_date = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ("-view_date", )
+        indexes = [models.Index(fields=["-view_date",])]
 
-
+    def __str__(self):
+        return self.article.title

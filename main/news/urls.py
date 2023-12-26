@@ -12,6 +12,10 @@ urlpatterns = [
     path('update/<int:pk>/', views.ArticleUpdatelView.as_view(), name='update_news'), #корректировка новости
     path('news/add', views.add_news, name='add_news'),                             #добавление новости
     path('delete/<int:pk>/', views.ArticleDeletelView.as_view(), name='delete_news'),      #удаление новости
-    path('search/', views.search_news, name='search_news'),      #удаление новости
+    path('search_news/', views.search_news, name='search_news'),      #поиск новостей
+    path('autosuggest/', views.autosuggest, name='autosuggest'),      #автоподставление
+    path("my_news_list/", views.AuthorListView.as_view(), name= "my_news_list"), #список новостей автора
+    path("add_tag_category/", views.add_tag_category, name= "add_tag_category"), #список новостей автора
+
 
 ]

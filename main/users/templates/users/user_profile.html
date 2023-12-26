@@ -3,12 +3,17 @@
 {% load static %}
 {% load bootstrap5 %}
 {% load crispy_forms_tags %}
+{% load i18n widget_tweaks %}
+{% load i18n %}
+
 
 {% block title %} Личный кабинет {% endblock title %}
 
 
-
 {% block content %}
+
+
+
 
 <!--Окно данных пользователя-->
 <div class="container-fluid">
@@ -36,9 +41,22 @@
 
                     <!-- Button trigger modal -->
                     <div class="text-center">
-                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#profileModal">Редактировать профиль</button>
+                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#profileModal" style="width: 50%; ">Редактировать профиль</button>
                     </div>
-                    <br />
+                    <br>
+
+
+                        <div class="text-center">
+                            <a class="btn btn-outline-primary" href="{% url 'users_app:change_password' %}" style="width: 50%; ">Сменить пароль</a>
+                        </div>
+                     <br>
+
+
+                    <div class="text-center">
+                            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#deleteModal" style="width: 50%; ">Удалить аккаунт</button>
+                        </div>
+                    <br>
+
                 </div>
             </div>
         </div>
@@ -47,23 +65,22 @@
 
 
 
-
-
 <!--Всплывающее окно редактирования профиля-->
-<div class="modal fade" tabindex="-1" id="profileModal" aria-hidden="true" role="dialog">
+<div class="modal fade" tabindex="-2" id="profileModal" aria-hidden="true" role="dialog">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Редактировать профиль</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
             </div>
 
             <div class="modal-body">
                 <form method="post" enctype="multipart/form-data">
                     {% csrf_token %} {{ user_form|crispy }} {{ profile_form|crispy }}
 
+
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary" value="Treter">Сохранить изменения</button>
+                        <button type="submit" class="btn btn-primary" name="changing_profile">Сохранить изменения</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
                     </div>
                 </form>
@@ -75,4 +92,30 @@
 
 
 
+<!--Всплывающее окно удаления профиля-->
+<div class="modal fade" tabindex="-2" id="deleteModal" aria-hidden="true" role="dialog">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Удалить профиль</h5>
+            </div>
+
+            <div class="modal-body">
+                <form method="POST">
+                    {% csrf_token %}
+                    <h3>Вы точно хотите удалить аккаунт {{ request.user.username }}?</h3>
+
+                    <div class="modal-footer">
+                        <a class="btn btn-outline-primary" href="{% url 'users_app:profile_delete' %}">Удалить аккаунт</a>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отменить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 {% endblock %}
+
